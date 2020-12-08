@@ -1,0 +1,35 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+apply plugin: 'koin'
+apply plugin: 'org.jlleitschuh.gradle.ktlint'
+buildscript {
+    apply from: "$rootProject.projectDir/.dependencies/versions.gradle"
+    repositories {
+        google()
+        jcenter()
+        maven { url "https://jitpack.io" }
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url 'https://dl.bintray.com/sh3lan93/Android' }
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:$buildToolsVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.koin:koin-gradle-plugin:$koinVersion"
+        classpath "de.mannodermaus.gradle.plugins:android-junit5:$jUnitPluginVersion"
+        def nav_version = "2.3.1"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
+        classpath "org.jlleitschuh.gradle:ktlint-gradle:$ktLint"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+
+        maven { url "https://jitpack.io" }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

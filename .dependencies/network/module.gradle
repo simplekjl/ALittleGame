@@ -1,0 +1,14 @@
+apply from: "$rootProject.projectDir/.dependencies/versions.gradle"
+
+dependencies {
+    implementation "com.squareup.okhttp3:okhttp:$okhttpVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    // gson
+    // implementation "com.google.code.gson:gson:$gson"
+    implementation "com.squareup.moshi:moshi:1.9.2"
+    kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.8.0'
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.okhttp3:mockwebserver:$mockServerVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$httpLogginVersion"
+}

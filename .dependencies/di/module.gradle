@@ -1,0 +1,8 @@
+apply from: "$rootProject.projectDir/.dependencies/versions.gradle"
+apply plugin: 'kotlin-kapt'
+
+dependencies {
+    implementation "org.koin:koin-android:$koinVersion"
+    implementation "org.koin:koin-androidx-scope:$koinVersion"
+    implementation "org.koin:koin-androidx-viewmodel:$koinVersion"
+}
