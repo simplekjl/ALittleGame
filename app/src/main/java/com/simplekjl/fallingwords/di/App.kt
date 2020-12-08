@@ -5,6 +5,8 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.simplekjl.fallingwords.R
+import com.simplekjl.fallingwords.data.TranslationRepository
+import com.simplekjl.fallingwords.data.TranslationRepositoryImpl
 import com.simplekjl.fallingwords.data.model.Word
 import com.squareup.moshi.Moshi
 import org.koin.android.ext.koin.androidContext
@@ -21,6 +23,7 @@ class App : Application() {
 
     private fun createDataModule() = module {
         factory { Moshi.Builder().build() }
+        factory<TranslationRepository> { TranslationRepositoryImpl(readWordFromRaw()) }
     }
 
     override fun onCreate() {
@@ -39,12 +42,13 @@ class App : Application() {
         }
     }
 
-    private fun readWordFromRaw() {
+    private fun readWordFromRaw(): List<Word> {
         val rawFile = applicationContext.resources.openRawResource(R.raw.words_v2)
         val rd: String = BufferedReader(InputStreamReader(rawFile)).use { it.readText() }
         val gson = Gson()
         val listPersonType = object : TypeToken<List<Word>>() {}.type
         val wordsList: List<Word> = gson.fromJson(rd, listPersonType)
         Log.d("list", "readWordFromRaw: $wordsList")
+        return wordsList
     }
 }
