@@ -13,7 +13,6 @@ import com.simplekjl.fallingwords.ui.MainViewModel
 import com.simplekjl.fallingwords.ui.model.MainScreenView
 import com.simplekjl.fallingwords.ui.model.WordViewEntity
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.card_word.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.random.Random
 
@@ -28,7 +27,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        startCountDown()
         mainViewModel.screenState.observe(this, { screenState ->
             when (screenState) {
                 is MainScreenView -> {
@@ -36,6 +34,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+        start_btn.setOnClickListener {
+            startCountDown()
+            start_btn.isVisible = false
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -45,24 +47,32 @@ class MainActivity : AppCompatActivity() {
             counter_words.text = state.remainingWords.toString()
             score_count.text = state.score.toString()
         } else {
-            
-            startCounter.isVisible = true
-            startCounter.text = "The final score is ${state.score} from 15 words"
+            controlers.isVisible = false
+            score_count.text = state.score.toString()
+            newGameGroup.isVisible = state.isCompleted
+            incorrect.text = (15 - state.score).toString()
+            correct.text = state.score.toString()
+            restart.setOnClickListener {
+                mainViewModel.restart()
+                newGameGroup.isVisible = false
+            }
+            exit.setOnClickListener { finish() }
         }
     }
 
     private fun startCountDown() {
-        object : CountDownTimer(3000, 1000) {
+        counter_tv.isVisible = true
+        object : CountDownTimer(6000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val number = millisUntilFinished / 1000
-                startCounter.text = number.toString()
+                counter_tv.text = number.toString()
                 if (number.toInt() == 0)
-                    startCounter.text = getString(R.string.start_label)
+                    counter_tv.text = getString(R.string.start_label)
             }
 
             override fun onFinish() {
                 mainViewModel.startGame()
-                startCounter.isVisible = false
+                counter_tv.isVisible = false
                 card_word_guess.isVisible = true
             }
         }.start()

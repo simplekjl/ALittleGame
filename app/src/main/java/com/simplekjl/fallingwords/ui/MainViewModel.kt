@@ -77,4 +77,10 @@ class MainViewModel(private val repository: TranslationRepository) : ViewModel()
             score += 1
         }
     }
+
+    fun restart() {
+        score = 0
+        remainingWords = 15
+        startGame()
+    }
 }
