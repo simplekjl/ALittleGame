@@ -8,10 +8,13 @@ import com.simplekjl.fallingwords.R
 import com.simplekjl.fallingwords.data.TranslationRepository
 import com.simplekjl.fallingwords.data.TranslationRepositoryImpl
 import com.simplekjl.fallingwords.data.model.Word
+import com.simplekjl.fallingwords.domain.mappers.WordRawToUiMapper
+import com.simplekjl.fallingwords.ui.MainViewModel
 import com.squareup.moshi.Moshi
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.GlobalContext
 import org.koin.dsl.module
 import java.io.BufferedReader
@@ -19,12 +22,19 @@ import java.io.InputStreamReader
 
 
 class App : Application() {
+
     val dataModule = createDataModule()
+
+    // ui module
+    val mainModule = createMainModule()
 
     private fun createDataModule() = module {
         factory { Moshi.Builder().build() }
-        factory<TranslationRepository> { TranslationRepositoryImpl(readWordFromRaw()) }
+        factory { WordRawToUiMapper() }
+        factory<TranslationRepository> { TranslationRepositoryImpl(readWordFromRaw(), get()) }
     }
+
+    private fun createMainModule() = module { viewModel { MainViewModel(get()) } }
 
     override fun onCreate() {
         super.onCreate()
@@ -37,6 +47,7 @@ class App : Application() {
             modules(
                 listOf(
                     dataModule,
+                    mainModule
                 )
             )
         }
