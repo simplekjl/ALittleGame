@@ -1,0 +1,10 @@
+apply from: "$rootProject.projectDir/.dependencies/versions.gradle"
+dependencies {
+    implementation "com.facebook.shimmer:shimmer:$shimmerVersion"
+    implementation "io.coil-kt:coil:1.1.0"
+    implementation 'com.mohamed.shalan:inc-dec-view:1.0'
+    implementation 'com.github.jrizani:JRDateTimePicker:1.0'
+
+    // animations with lottie
+    implementation "com.airbnb.android:lottie:3.4.0"
+}

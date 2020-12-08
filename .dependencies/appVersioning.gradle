@@ -1,0 +1,6 @@
+ext {
+    minVersion = 24
+    targetVersion = 30
+    codeVersion = 1
+    nameVersion = '1.0'
+}

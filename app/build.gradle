@@ -1,0 +1,52 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
+    id 'de.mannodermaus.android-junit5'
+    id 'androidx.navigation.safeargs.kotlin'
+}
+// applying deps modules, in case we want to scale the project we can play with this further on
+apply from: "$rootProject.projectDir/.dependencies/appVersioning.gradle"
+apply from: "$rootProject.projectDir/.dependencies/testing/module.gradle"
+apply from: "$rootProject.projectDir/.dependencies/network/module.gradle"
+apply from: "$rootProject.projectDir/.dependencies/androidDeps/module.gradle"
+apply from: "$rootProject.projectDir/.dependencies/extras/module.gradle"
+apply from: "$rootProject.projectDir/.dependencies/di/module.gradle"
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        applicationId "com.simplekjl.fallingwords"
+        minSdkVersion minVersion
+        targetSdkVersion targetVersion
+        versionCode codeVersion
+        versionName nameVersion
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArgument "runnerBuilder", "de.mannodermaus.junit5.AndroidJUnit5Builder"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE.md'
+        exclude 'META-INF/LICENSE-notice.md'
+    }
+}
+
+dependencies {
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}
