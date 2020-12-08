@@ -20,7 +20,7 @@
         tools:text="3" />
 
     <ImageButton
-        android:id="@+id/ok_btn"
+        android:id="@+id/positive_btn"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:background="@color/positive"
@@ -86,25 +86,29 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/card_word"
+        android:id="@+id/card_word_guess"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:elevation="@dimen/cardview_default_elevation"
+        android:visibility="invisible"
         app:cardBackgroundColor="#2196F3"
-        app:layout_constraintBottom_toTopOf="@+id/ok_btn"
+        app:layout_constraintBottom_toTopOf="@+id/positive_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
-            android:id="@+id/guess_word"
+            android:id="@+id/word_trans"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center_vertical"
             android:layout_margin="16dp"
             android:fontFamily="@font/roboto_medium"
             android:textColor="#F2FBF9F9"
+            android:textSize="30sp"
             tools:text="Pony" />
     </androidx.cardview.widget.CardView>
+
+    <include layout="@layout/card_word" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
