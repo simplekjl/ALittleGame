@@ -5,11 +5,15 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.DisplayMetrics
+import androidx.annotation.Nullable
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.core.view.isVisible
+import androidx.test.espresso.IdlingResource
 import com.simplekjl.fallingwords.ui.MainViewModel
+import com.simplekjl.fallingwords.ui.idlingResource.SimpleIdlingResource
 import com.simplekjl.fallingwords.ui.model.MainScreenView
 import com.simplekjl.fallingwords.ui.model.WordViewEntity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -23,6 +27,10 @@ class MainActivity : AppCompatActivity() {
     private var screenWidth = 0f
 
     private val mainViewModel: MainViewModel by viewModel()
+
+    // The Idling Resource which will be null in production.
+    @Nullable
+    private var mIdlingResource: SimpleIdlingResource? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +72,9 @@ class MainActivity : AppCompatActivity() {
         counter_tv.isVisible = true
         object : CountDownTimer(6000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
+                mIdlingResource?.let {
+                    it.setIdleState(false)
+                }
                 val number = millisUntilFinished / 1000
                 counter_tv.text = number.toString()
                 if (number.toInt() == 0)
@@ -71,7 +82,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFinish() {
-                mainViewModel.startGame()
+                mIdlingResource?.let { it.setIdleState(true) }
+                mainViewModel.shuffleWords()
                 counter_tv.isVisible = false
                 card_word_guess.isVisible = true
             }
@@ -104,20 +116,19 @@ class MainActivity : AppCompatActivity() {
         valueAnimator.doOnEnd {
             // line need it in case we cancel the animation
             if (!userClicked)
-                mainViewModel.startGame()
+                mainViewModel.shuffleWords()
         }
 
         valueAnimator.duration = DEFAULT_ANIMATION_DURATION
         valueAnimator.start()
 
-        wrong_btn.setOnClickListener {
+        negative_btn.setOnClickListener {
             mainViewModel.checkFalse(
                 wasRealWord = showReal, userSelection = false
             )
             userClicked = true
             valueAnimator.cancel()
 
-            mainViewModel.startGame()
 
         }
         positive_btn.setOnClickListener {
@@ -126,7 +137,6 @@ class MainActivity : AppCompatActivity() {
             )
             userClicked = true
             valueAnimator.cancel()
-            mainViewModel.startGame()
         }
     }
 
@@ -138,6 +148,16 @@ class MainActivity : AppCompatActivity() {
         screenWidth = displayMetrics.widthPixels.toFloat()
     }
 
+    /**
+     * Only called from test, creates and returns a new [SimpleIdlingResource].
+     */
+    @VisibleForTesting
+    fun getIdlingResource(): IdlingResource? {
+        if (mIdlingResource == null) {
+            mIdlingResource = SimpleIdlingResource()
+        }
+        return mIdlingResource
+    }
     companion object {
         const val DEFAULT_ANIMATION_DURATION = 3500L
     }

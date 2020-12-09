@@ -21,30 +21,38 @@ class MainViewModel(private val repository: TranslationRepository) : ViewModel()
     val screenState: LiveData<ScreenState>
         get() = _screenState
 
-    fun startGame() {
+    fun shuffleWords() {
         if (remainingWords > 0) {
             remainingWords -= 1
-            val random = Random.nextInt(0, 14)
-            val showReal = Random.nextBoolean()
-            val word: WordViewEntity = if (showReal) {
-                wordList[random]
+            val randomPair = getRandomValues()
+            val word: WordViewEntity = if (randomPair.second) {
+                wordList[randomPair.first]
             } else {
-                val pos1 = Random.nextInt(0, 14)
-                val pos2 = Random.nextInt(0, 14)
-                val word1 = wordList[pos1]
-                val word2 = wordList[pos2]
-                WordViewEntity(word1.word, word2.translation)
+                createMixedWord(randomPair.first)
             }
             _screenState.value = MainScreenView(
                 remainingWords = remainingWords,
                 score = score,
                 word = word,
-                showRealWord = showReal
+                showRealWord = randomPair.second
             )
         } else {
             _screenState.value =
                 MainScreenView(remainingWords = 0, score = score, isCompleted = true)
         }
+    }
+
+    private fun createMixedWord(position: Int): WordViewEntity {
+        return WordViewEntity(wordList[position].word, wordList[position + 1].translation)
+    }
+
+    /**
+     * handy method to get a random int and a boolean to play the game
+     */
+    private fun getRandomValues(): Pair<Int, Boolean> {
+        val random = Random.nextInt(0, 14)
+        val showReal = Random.nextBoolean()
+        return Pair(random, showReal)
     }
 
     /**
@@ -56,6 +64,7 @@ class MainViewModel(private val repository: TranslationRepository) : ViewModel()
         if (!wasRealWord && !userSelection) {
             score += 1
         }
+        shuffleWords() // will produce a new state
     }
 
     /**
@@ -67,6 +76,7 @@ class MainViewModel(private val repository: TranslationRepository) : ViewModel()
         if (wasRealWord && userSelection) {
             score += 1
         }
+        shuffleWords() // will produce a new state
     }
 
     /**
@@ -76,11 +86,12 @@ class MainViewModel(private val repository: TranslationRepository) : ViewModel()
         if (wasRealWord) {
             score += 1
         }
+        shuffleWords() // will produce a new state
     }
 
     fun restart() {
         score = 0
         remainingWords = 15
-        startGame()
+        shuffleWords()
     }
 }

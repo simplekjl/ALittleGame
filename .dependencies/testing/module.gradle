@@ -19,5 +19,14 @@ dependencies {
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    androidTestImplementation "com.android.support.test.espresso:espresso-intents:3.0.1"
+    androidTestImplementation "com.android.support.test.espresso:espresso-intents:3.0.2"
+    implementation 'androidx.test.espresso:espresso-idling-resource:3.3.0'
+    //For mocking objects and verifying stubs
+    testImplementation 'org.mockito:mockito-core:2.25.1'
+
+//For making more readable assertions
+    testImplementation "com.google.truth:truth:1.0"
+
+//For accessing Test helpers to test LiveData
+    testImplementation 'androidx.arch.core:core-testing:2.1.0'
 }
