@@ -55,14 +55,16 @@ class MainActivity : AppCompatActivity() {
             counter_words.text = state.remainingWords.toString()
             score_count.text = state.score.toString()
         } else {
-            controlers.isVisible = false
+            controllers.isVisible = false
             score_count.text = state.score.toString()
             newGameGroup.isVisible = state.isCompleted
             incorrect.text = (15 - state.score).toString()
             correct.text = state.score.toString()
+
             restart.setOnClickListener {
                 mainViewModel.restart()
                 newGameGroup.isVisible = false
+                controllers.isVisible = true
             }
             exit.setOnClickListener { finish() }
         }
@@ -85,7 +87,7 @@ class MainActivity : AppCompatActivity() {
                 mIdlingResource?.let { it.setIdleState(true) }
                 mainViewModel.shuffleWords()
                 counter_tv.isVisible = false
-                card_word_guess.isVisible = true
+                controllers.isVisible = true
             }
         }.start()
 
@@ -158,6 +160,7 @@ class MainActivity : AppCompatActivity() {
         }
         return mIdlingResource
     }
+
     companion object {
         const val DEFAULT_ANIMATION_DURATION = 3500L
     }
